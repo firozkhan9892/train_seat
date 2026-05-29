@@ -9,6 +9,9 @@ const POPULAR_TRAINS = [
   { number: "12001", name: "Shatabdi Express" },
   { number: "12259", name: "Sealdah Duronto" },
   { number: "12309", name: "Patna Rajdhani" },
+  { number: "12103", name: "LTT Lucknow Exp" },
+  { number: "12533", name: "Pushpak Exp" },
+  { number: "12336", name: "LTT Bhagalpur Exp" },
 ];
 
 export default function TrainTracker() {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getTrainLocation } from "../api";
 import TrainMap from "./TrainMap";
 
-const TRACKED_TRAINS = ["12301", "12951", "12627", "12001", "12259", "12309", "22691", "12431", "12049"];
+const TRACKED_TRAINS = ["12301", "12951", "12627", "12001", "12259", "12309", "22691", "12431", "12049", "12103", "12533", "12107", "12336", "12541", "12165"];
 
 export default function LiveTrains() {
   const [trains, setTrains] = useState([]);
