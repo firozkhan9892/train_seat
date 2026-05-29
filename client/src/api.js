@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "http://localhost:5000/api" });
+const BASE = import.meta.env.PROD ? "/api" : "http://localhost:5000/api";
+const api = axios.create({ baseURL: BASE });
 
 export const getStations = () => api.get("/stations").then((r) => r.data);
 

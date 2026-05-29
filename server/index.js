@@ -135,7 +135,11 @@ app.get("/api/trains/running/all", (req, res) => {
   res.json(liveTrains);
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Train API server running on http://localhost:${PORT}`);
-});
+export default app;
+
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Train API server running on http://localhost:${PORT}`);
+  });
+}
