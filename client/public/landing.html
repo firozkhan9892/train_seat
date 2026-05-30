@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailSeek — Indian Railways Booking & Tracking Platform</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #333; line-height: 1.6; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header */
+    .header { background: #1a237e; color: white; padding: 16px 0; position: sticky; top: 0; z-index: 100; }
+    .header .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { color: #ffd54f; }
+    .header nav a { color: rgba(255,255,255,0.8); text-decoration: none; margin-left: 24px; font-size: 14px; }
+    .header nav a:hover { color: white; }
+    .header .btn-demo { background: #ffd54f; color: #1a237e; padding: 8px 20px; border-radius: 6px; font-weight: 600; }
+    .header .btn-demo:hover { background: #ffca28; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%); color: white; padding: 100px 0 80px; text-align: center; }
+    .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; letter-spacing: -1px; }
+    .hero h1 span { color: #ffd54f; }
+    .hero p { font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.2s; }
+    .btn-primary { background: #ffd54f; color: #1a237e; }
+    .btn-primary:hover { background: #ffca28; transform: translateY(-2px); }
+    .btn-outline-light { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline-light:hover { border-color: white; transform: translateY(-2px); }
+
+    /* Features */
+    .features { padding: 80px 0; background: #f8f9fa; }
+    .features h2 { text-align: center; font-size: 36px; margin-bottom: 48px; color: #1a237e; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .feature-card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: 0.2s; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .feature-icon { font-size: 36px; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 18px; margin-bottom: 8px; color: #1a237e; }
+    .feature-card p { font-size: 14px; color: #666; }
+
+    /* Live Demo */
+    .demo { padding: 80px 0; background: white; text-align: center; }
+    .demo h2 { font-size: 36px; margin-bottom: 16px; color: #1a237e; }
+    .demo p { color: #666; max-width: 500px; margin: 0 auto 32px; }
+    .demo-screenshot { background: #f0f4f8; border-radius: 12px; padding: 40px; max-width: 800px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .demo-placeholder { font-size: 48px; margin-bottom: 16px; }
+    .demo-screenshot h4 { color: #1a237e; margin-bottom: 8px; }
+    .demo-screenshot p { color: #666; font-size: 14px; }
+
+    /* Pricing */
+    .pricing { padding: 80px 0; background: #f8f9fa; }
+    .pricing h2 { text-align: center; font-size: 36px; margin-bottom: 48px; color: #1a237e; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; }
+    .pricing-card { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; transition: 0.2s; border: 2px solid transparent; }
+    .pricing-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .pricing-card.featured { border-color: #ffd54f; box-shadow: 0 4px 20px rgba(255,213,79,0.2); }
+    .pricing-card h3 { font-size: 20px; color: #1a237e; margin-bottom: 8px; }
+    .pricing-card .price { font-size: 42px; font-weight: 800; color: #1a237e; margin: 16px 0; }
+    .pricing-card .price span { font-size: 16px; font-weight: 400; color: #999; }
+    .pricing-card ul { list-style: none; margin: 24px 0; }
+    .pricing-card ul li { padding: 8px 0; font-size: 14px; color: #555; border-bottom: 1px solid #f5f5f5; }
+    .pricing-card ul li:last-child { border-bottom: none; }
+    .pricing-card .btn { margin-top: 16px; }
+    .badge { display: inline-block; background: #ffd54f; color: #1a237e; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 8px; }
+
+    /* Contact / CTA */
+    .cta { padding: 80px 0; background: linear-gradient(135deg, #1a237e, #283593); color: white; text-align: center; }
+    .cta h2 { font-size: 36px; margin-bottom: 16px; }
+    .cta p { opacity: 0.9; margin-bottom: 32px; }
+    .contact-box { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 32px; max-width: 500px; margin: 0 auto; }
+    .contact-box a { color: #ffd54f; text-decoration: none; font-size: 18px; display: block; margin: 8px 0; }
+    .contact-box a:hover { text-decoration: underline; }
+
+    /* Footer */
+    .footer { background: #0d1557; color: rgba(255,255,255,0.6); padding: 24px 0; text-align: center; font-size: 14px; }
+    .footer a { color: #ffd54f; text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .header nav a { margin-left: 12px; font-size: 13px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <div class="logo">🚂 Rail<span>Seek</span></div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <a href="https://train-seat-phi.vercel.app" class="btn-demo" target="_blank">Live Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Real-Time <span>Indian Railways</span><br>Booking & Tracking Platform</h1>
+      <p>Search trains, check live seat availability with RAC/WL status, track trains in real-time, and book tickets — all in one place. Built for travel agents and railway passengers.</p>
+      <div class="hero-buttons">
+        <a href="https://train-seat-phi.vercel.app" class="btn btn-primary" target="_blank">🚂 Try Live Demo</a>
+        <a href="#pricing" class="btn btn-outline-light">See Pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Everything You Need</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Train Search</h3>
+          <p>Search any train between stations with real-time schedules, duration, and class availability.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💺</div>
+          <h3>Seat Availability</h3>
+          <p>Check available, RAC, and waiting list seats with exact fare breakdown for every class.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h3>Live Train Tracking</h3>
+          <p>Track any train in real-time with interactive map, delay info, and station-by-station progress.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎫</div>
+          <h3>Instant Booking</h3>
+          <p>Book tickets with auto PNR generation. Supports multiple passengers per booking.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>PNR Status</h3>
+          <p>Check booking status by PNR number with full passenger details and confirmation status.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Booking Management</h3>
+          <p>View all bookings in one dashboard with passenger info, fare, and status at a glance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo">
+    <div class="container">
+      <h2>See It In Action</h2>
+      <p>Clean, fast, and mobile-friendly interface. No login required to search and track trains.</p>
+      <div class="demo-screenshot">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:center">
+          <div>
+            <div style="font-size:32px;margin-bottom:8px">🔍</div>
+            <h4>Search Trains</h4>
+            <p>From → To → Date → Results in seconds</p>
+          </div>
+          <div>
+            <div style="font-size:32px;margin-bottom:8px">💺</div>
+            <h4>Check Seats</h4>
+            <p>Available • RAC • Waiting List with fare</p>
+          </div>
+          <div>
+            <div style="font-size:32px;margin-bottom:8px">📍</div>
+            <h4>Live Map</h4>
+            <p>Real-time train position with delay</p>
+          </div>
+          <div>
+            <div style="font-size:32px;margin-bottom:8px">🎫</div>
+            <h4>Book & PNR</h4>
+            <p>Instant booking with PRN generation</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:24px">
+        <a href="https://train-seat-phi.vercel.app" class="btn btn-primary" target="_blank">🚂 Open Live App</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <h2>Simple Pricing</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Starter</h3>
+          <div class="price">₹999<span>/month</span></div>
+          <ul>
+            <li>✅ All features included</li>
+            <li>✅ Up to 100 bookings/month</li>
+            <li>✅ Email support</li>
+            <li>❌ Custom domain</li>
+            <li>❌ Multi-user access</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary" style="background:#e8eaf6;color:#1a237e">Get Started</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="badge">POPULAR</div>
+          <h3>Professional</h3>
+          <div class="price">₹1,999<span>/month</span></div>
+          <ul>
+            <li>✅ All features included</li>
+            <li>✅ Unlimited bookings</li>
+            <li>✅ Priority support</li>
+            <li>✅ Custom domain</li>
+            <li>✅ Multi-user (up to 5)</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Get Started</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <div class="price">₹4,999<span>/month</span></div>
+          <ul>
+            <li>✅ Everything in Professional</li>
+            <li>✅ Unlimited users</li>
+            <li>✅ WhatsApp notifications</li>
+            <li>✅ API access</li>
+            <li>✅ Dedicated support</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary" style="background:#e8eaf6;color:#1a237e">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <div class="container">
+      <h2>Ready to Start?</h2>
+      <p>Get your own train booking & tracking platform today.</p>
+      <div class="contact-box">
+        <div style="font-size:14px;opacity:0.8;margin-bottom:8px">Contact us:</div>
+        <a href="mailto:contact@trainseek.in">📧 contact@trainseek.in</a>
+        <a href="tel:+919999999999">📞 +91 99999 99999</a>
+        <div style="margin-top:12px;font-size:13px;opacity:0.6">Available 10 AM — 7 PM, Mon-Sat</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 <a href="#">RailSeek</a>. Built with 🚂 for Indian Railways.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
