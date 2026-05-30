@@ -26,31 +26,6 @@ app.get("/api/trains/search", async (req, res) => {
   try {
     if (useRealApi) {
       const realResults = await irctc.searchTrains(from, to, date);
-      for (const t of realResults) {
-        for (const c of Object.keys(t.classes)) {
-          try {
-            const avail = await irctc.checkAvailability(t.number, c, date);
-            t.classes[c] = {
-              name: classFullNames[c] || c,
-              available: avail.available,
-              rac: avail.rac,
-              waitingList: avail.waitingList,
-              fare: avail.fare,
-              status: avail.status,
-            };
-          } catch {
-            const fallback = getAvailability(t.number, c, date || "2026-05-29");
-            t.classes[c] = {
-              name: classFullNames[c] || c,
-              available: fallback.available,
-              rac: fallback.rac,
-              waitingList: fallback.waitingList,
-              fare: fallback.fare,
-              status: fallback.status,
-            };
-          }
-        }
-      }
       return res.json(realResults);
     }
   } catch {}
