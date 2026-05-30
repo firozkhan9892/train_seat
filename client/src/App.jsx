@@ -4,11 +4,13 @@ import StationSearch from "./components/StationSearch";
 import TrainTracker from "./components/TrainTracker";
 import PNRStatus from "./components/PNRStatus";
 import LiveTrains from "./components/LiveTrains";
+import AllBookings from "./components/AllBookings";
 
 const PAGES = {
   SEARCH: "Search & Book",
   TRACK: "Live Train Tracking",
   PNR: "PNR Status",
+  BOOKINGS: "All Bookings",
   LIVE: "All Running Trains",
 };
 
@@ -31,6 +33,7 @@ function App() {
         {page === "SEARCH" && <StationSearch />}
         {page === "TRACK" && <TrainTracker />}
         {page === "PNR" && <PNRStatus />}
+        {page === "BOOKINGS" && <AllBookings />}
         {page === "LIVE" && <LiveTrains />}
       </div>
     </div>
