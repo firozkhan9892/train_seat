@@ -121,6 +121,18 @@
 .error { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
 
 /* Responsive */
+/* Admin */
+.admin-header { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px; }
+.admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.admin-stat-card { background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.admin-stat-value { font-size: 32px; font-weight: 800; }
+.admin-stat-label { font-size: 13px; color: #999; margin-top: 4px; font-weight: 500; }
+.admin-table-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin-table th { background: #f5f5f5; text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; }
+.admin-table td { padding: 12px 16px; border-top: 1px solid #f5f5f5; }
+.admin-table tbody tr:hover { background: #fafafa; }
+.empty-state { text-align: center; padding: 48px; color: #999; }
 @media (max-width: 768px) {
   .header { flex-wrap: wrap; gap: 8px; }
   .header h1 { font-size: 16px; }

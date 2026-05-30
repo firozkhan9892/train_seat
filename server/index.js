@@ -190,6 +190,53 @@ app.get("/api/trains/running/all", (req, res) => {
   res.json(liveTrains);
 });
 
+// Admin Dashboard Stats
+app.get("/api/admin/stats", (req, res) => {
+  const total = bookings.length;
+  const totalIncome = bookings.reduce((s, b) => s + (b.fare || 0), 0);
+  const uniqueCustomers = new Set(bookings.flatMap((b) => b.passengers?.map((p) => p.name) || [])).size;
+  const today = new Date().toISOString().split("T")[0];
+  const todayBookings = bookings.filter((b) => b.createdAt?.startsWith(today)).length;
+  res.json({ totalBookings: total, totalIncome, uniqueCustomers, todayBookings });
+});
+
+// Admin Customers
+app.get("/api/admin/customers", (req, res) => {
+  const customerMap = {};
+  for (const b of bookings) {
+    for (const p of b.passengers || []) {
+      const key = p.name.toLowerCase();
+      if (!customerMap[key]) customerMap[key] = { name: p.name, phone: p.phone || "", bookings: 0, totalSpent: 0, lastBooking: "" };
+      customerMap[key].bookings++;
+      customerMap[key].totalSpent += b.fare || 0;
+      if (b.createdAt > customerMap[key].lastBooking) customerMap[key].lastBooking = b.createdAt;
+    }
+  }
+  res.json(Object.values(customerMap).sort((a, b) => b.bookings - a.bookings));
+});
+
+// Admin Reports
+app.get("/api/admin/reports", (req, res) => {
+  const { from, to } = req.query;
+  let filtered = bookings;
+  if (from) filtered = filtered.filter((b) => b.createdAt >= from);
+  if (to) filtered = filtered.filter((b) => b.createdAt <= to + "T23:59:59Z");
+  const totalIncome = filtered.reduce((s, b) => s + (b.fare || 0), 0);
+  const byMonth = {};
+  for (const b of filtered) {
+    const month = b.createdAt?.slice(0, 7) || "unknown";
+    if (!byMonth[month]) byMonth[month] = { bookings: 0, income: 0 };
+    byMonth[month].bookings++;
+    byMonth[month].income += b.fare || 0;
+  }
+  res.json({
+    totalBookings: filtered.length,
+    totalIncome,
+    byMonth: Object.entries(byMonth).map(([month, data]) => ({ month, ...data })),
+    bookings: filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+  });
+});
+
 export default app;
 
 if (!process.env.VERCEL) {
