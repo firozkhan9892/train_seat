@@ -16,11 +16,18 @@ app.use(express.json());
 
 // InsForge DB setup
 let insforge = null;
-const configPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".insforge", "project.json");
 try {
-  const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-  insforge = createAdminClient({ baseUrl: config.oss_host, apiKey: config.api_key });
-  console.log("InsForge DB connected:", config.oss_host);
+  const baseUrl = process.env.INSFORGE_URL;
+  const apiKey = process.env.INSFORGE_API_KEY;
+  if (baseUrl && apiKey) {
+    insforge = createAdminClient({ baseUrl, apiKey });
+    console.log("InsForge DB connected via env vars:", baseUrl);
+  } else {
+    const configPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".insforge", "project.json");
+    const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    insforge = createAdminClient({ baseUrl: config.oss_host, apiKey: config.api_key });
+    console.log("InsForge DB connected via config file:", config.oss_host);
+  }
 } catch (e) {
   console.warn("InsForge config not found. Using in-memory storage.");
 }
