@@ -104,7 +104,7 @@ export default function StationSearch() {
                 <span className="train-type" style={{ marginLeft: 8 }}>{train.type}</span>
               </div>
             </div>
-            <button className="btn btn-outline btn-sm" onClick={() => handleShowAvailability(train, train.classes[0])}>
+            <button className="btn btn-outline btn-sm" onClick={() => handleShowAvailability(train, Object.keys(train.classes)[0])}>
               Check Seats
             </button>
           </div>
@@ -160,8 +160,8 @@ export default function StationSearch() {
 function SeatAvailabilityPanel({ availData, booking, onBook, onBack }) {
   const [passengers, setPassengers] = useState([{ name: "", age: "", gender: "Male" }]);
 
-  const cls = availData.selectedClass;
-  const totalFare = (cls.fare || 0) * passengers.length;
+  const cls = availData?.selectedClass;
+  const totalFare = (cls?.fare || 0) * passengers.length;
 
   const addPassenger = () => setPassengers([...passengers, { name: "", age: "", gender: "Male" }]);
   const removePassenger = (i) => setPassengers(passengers.filter((_, idx) => idx !== i));
