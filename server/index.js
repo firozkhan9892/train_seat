@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { stations, trains, getAvailability, getTrainPosition, classFullNames } from "./data.js";
+import * as irctc from "./irctcService.js";
+
+const useRealApi = !!irctc.key;
 
 const app = express();
 app.use(cors());
@@ -15,18 +18,47 @@ app.get("/api/stations", (req, res) => {
 });
 
 // Search trains between stations
-app.get("/api/trains/search", (req, res) => {
+app.get("/api/trains/search", async (req, res) => {
   const { from, to, date } = req.query;
   if (!from || !to) {
     return res.status(400).json({ error: "from and to are required" });
   }
+  try {
+    if (useRealApi) {
+      const realResults = await irctc.searchTrains(from, to, date);
+      for (const t of realResults) {
+        for (const c of Object.keys(t.classes)) {
+          try {
+            const avail = await irctc.checkAvailability(t.number, c, date);
+            t.classes[c] = {
+              name: classFullNames[c] || c,
+              available: avail.available,
+              rac: avail.rac,
+              waitingList: avail.waitingList,
+              fare: avail.fare,
+              status: avail.status,
+            };
+          } catch {
+            const fallback = getAvailability(t.number, c, date || "2026-05-29");
+            t.classes[c] = {
+              name: classFullNames[c] || c,
+              available: fallback.available,
+              rac: fallback.rac,
+              waitingList: fallback.waitingList,
+              fare: fallback.fare,
+              status: fallback.status,
+            };
+          }
+        }
+      }
+      return res.json(realResults);
+    }
+  } catch {}
   const results = trains.filter((t) => {
     const fromIdx = t.route.indexOf(from);
     const toIdx = t.route.indexOf(to);
     return fromIdx !== -1 && toIdx !== -1 && fromIdx < toIdx;
   }).map((t) => {
-    const fromIdx = t.route.indexOf(from);
-    const toIdx = t.route.indexOf(to);
     const classes = {};
     for (const c of t.classes) {
       const avail = getAvailability(t.number, c, date || "2026-05-29");
@@ -52,26 +84,51 @@ app.get("/api/trains/:number", (req, res) => {
 });
 
 // Get real-time train position
-app.get("/api/trains/:number/location", (req, res) => {
+app.get("/api/trains/:number/location", async (req, res) => {
+  try {
+    if (useRealApi) {
+      const position = await irctc.getTrainPosition(req.params.number);
+      return res.json(position);
+    }
+  } catch {}
   const position = getTrainPosition(req.params.number);
   if (!position) return res.status(404).json({ error: "Train not found" });
   res.json(position);
 });
 
 // Get seat availability
-app.get("/api/trains/:number/availability", (req, res) => {
+app.get("/api/trains/:number/availability", async (req, res) => {
   const { class: className, date } = req.query;
   if (!className) return res.status(400).json({ error: "class is required" });
+  try {
+    if (useRealApi) {
+      const result = await irctc.checkAvailability(req.params.number, className, date);
+      return res.json(result);
+    }
+  } catch {}
   const result = getAvailability(req.params.number, className, date || "2026-05-29");
   if (result.error) return res.status(400).json(result);
   res.json(result);
 });
 
 // Get all classes availability for a train
-app.get("/api/trains/:number/availability/all", (req, res) => {
+app.get("/api/trains/:number/availability/all", async (req, res) => {
   const train = trains.find((t) => t.number === req.params.number);
   if (!train) return res.status(404).json({ error: "Train not found" });
   const { date } = req.query;
+  try {
+    if (useRealApi) {
+      const classes = {};
+      for (const c of train.classes) {
+        try {
+          classes[c] = await irctc.checkAvailability(req.params.number, c, date);
+        } catch {}
+      }
+      if (Object.keys(classes).length) {
+        return res.json({ trainNo: req.params.number, date: date || "2026-05-29", classes });
+      }
+    }
+  } catch {}
   const classes = {};
   for (const c of train.classes) {
     classes[c] = getAvailability(req.params.number, c, date || "2026-05-29");
